@@ -1,0 +1,45 @@
+{
+  "Files": [
+    {
+      "Id": "C:\\Users\\japja\\OneDrive - Hogeschool Rotterdam\\Documenten\\GitHub\\webdev-semster\\24-25\\StarterKit\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\StarterKit.bundle.scp.css",
+      "PackagePath": "staticwebassets\\StarterKit.bundle.scp.css"
+    },
+    {
+      "Id": "C:\\Users\\japja\\OneDrive - Hogeschool Rotterdam\\Documenten\\GitHub\\webdev-semster\\24-25\\StarterKit\\wwwroot\\css\\site.css",
+      "PackagePath": "staticwebassets\\css\\site.css"
+    },
+    {
+      "Id": "C:\\Users\\japja\\OneDrive - Hogeschool Rotterdam\\Documenten\\GitHub\\webdev-semster\\24-25\\StarterKit\\wwwroot\\favicon.ico",
+      "PackagePath": "staticwebassets\\favicon.ico"
+    },
+    {
+      "Id": "C:\\Users\\japja\\OneDrive - Hogeschool Rotterdam\\Documenten\\GitHub\\webdev-semster\\24-25\\StarterKit\\wwwroot\\images\\portal.jpg",
+      "PackagePath": "staticwebassets\\images\\portal.jpg"
+    },
+    {
+      "Id": "C:\\Users\\japja\\OneDrive - Hogeschool Rotterdam\\Documenten\\GitHub\\webdev-semster\\24-25\\StarterKit\\wwwroot\\js\\main.js",
+      "PackagePath": "staticwebassets\\js\\main.js"
+    },
+    {
+      "Id": "C:\\Users\\japja\\OneDrive - Hogeschool Rotterdam\\Documenten\\GitHub\\webdev-semster\\24-25\\StarterKit\\wwwroot\\lib\\bootstrap.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap.min.css"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.StarterKit.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.StarterKit.props",
+      "PackagePath": "build\\StarterKit.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.StarterKit.props",
+      "PackagePath": "buildMultiTargeting\\StarterKit.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildTransitive.StarterKit.props",
+      "PackagePath": "buildTransitive\\StarterKit.props"
+    }
+  ],
+  "ElementsToRemove": []
+}
