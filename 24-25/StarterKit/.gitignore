@@ -131,4 +131,5 @@ dist
 
 obj/
 Debug/
-*/**/obj/
+obj
+Debug
