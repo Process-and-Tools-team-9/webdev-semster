@@ -1,6 +1,7 @@
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using StarterKit.Services;
+using Microsoft.Data.Sqlite;
 
 namespace StarterKit.Controllers;
 
@@ -19,8 +20,25 @@ public class LoginController : Controller
     [HttpPost("Login")]
     public IActionResult Login([FromBody] LoginBody loginBody)
     {
-        // TODO: Impelement login method
-        return Unauthorized("Incorrect password");
+        string query = "SELECT COUNT(1) FROM Admin WHERE Username = @Username AND Password = @Password";
+        bool isAuthenticated = false;
+        using var connection = new SqliteConnection(@"Data Source=webdev.sqlite;Version=3;");
+        connection.Open();
+
+        using var command = new SqliteCommand(query, connection);
+        command.Parameters.AddWithValue("@Username", loginBody.Username);
+        command.Parameters.AddWithValue("@Password", loginBody.Password);
+        int count = Convert.ToInt32(command.ExecuteScalar());
+        isAuthenticated = count > 0;
+
+        if(isAuthenticated)
+        {
+            return Ok("Login successful");
+        }
+        else
+        {
+            return Unauthorized("Incorrect password");
+        }
     }
 
     [HttpGet("IsAdminLoggedIn")]
