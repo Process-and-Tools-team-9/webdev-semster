@@ -21,8 +21,20 @@ public class LoginController : Controller
     [HttpPost("Login")]
     public IActionResult Login([FromBody] LoginBody loginBody)
     {
+        bool isAuthenticated = CheckIfAdmin(loginBody);
+        if(isAuthenticated)
+        {
+            return Ok("Login successful");
+        }
+        else
+        {
+            return Unauthorized("Incorrect password");
+        }
+    }
+
+    public bool CheckIfAdmin(LoginBody loginBody)
+    {
         string query = "SELECT COUNT(1) FROM Admin WHERE Username = @Username AND Password = @Password";
-        bool isAuthenticated = false;
 
         using var connection = new SqliteConnection(@"Data Source=webdev.sqlite;");
         connection.Open();
@@ -32,16 +44,9 @@ public class LoginController : Controller
         command.Parameters.AddWithValue("@Password", EncryptionHelper.EncryptPassword(loginBody.Password));
 
         int count = Convert.ToInt32(command.ExecuteScalar());
-        isAuthenticated = count > 0;
-
-        if(isAuthenticated)
-        {
-            return Ok("Login successful");
-        }
-        else
-        {
-            return Unauthorized("Incorrect password");
-        }
+        bool isAuthenticated = count > 0;
+        
+        return isAuthenticated;
     }
 
 
