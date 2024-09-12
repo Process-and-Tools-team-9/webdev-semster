@@ -2,6 +2,7 @@ using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using StarterKit.Services;
 using Microsoft.Data.Sqlite;
+using StarterKit.Utils;
 
 namespace StarterKit.Controllers;
 
@@ -22,12 +23,14 @@ public class LoginController : Controller
     {
         string query = "SELECT COUNT(1) FROM Admin WHERE Username = @Username AND Password = @Password";
         bool isAuthenticated = false;
-        using var connection = new SqliteConnection(@"Data Source=webdev.sqlite;Version=3;");
+
+        using var connection = new SqliteConnection(@"Data Source=webdev.sqlite;");
         connection.Open();
 
         using var command = new SqliteCommand(query, connection);
         command.Parameters.AddWithValue("@Username", loginBody.Username);
-        command.Parameters.AddWithValue("@Password", loginBody.Password);
+        command.Parameters.AddWithValue("@Password", EncryptionHelper.EncryptPassword(loginBody.Password));
+
         int count = Convert.ToInt32(command.ExecuteScalar());
         isAuthenticated = count > 0;
 
@@ -40,6 +43,7 @@ public class LoginController : Controller
             return Unauthorized("Incorrect password");
         }
     }
+
 
     [HttpGet("IsAdminLoggedIn")]
     public IActionResult IsAdminLoggedIn()
