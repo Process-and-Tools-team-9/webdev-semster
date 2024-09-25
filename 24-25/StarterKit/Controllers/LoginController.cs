@@ -1,6 +1,8 @@
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using StarterKit.Services;
+using Microsoft.Data.Sqlite;
+using EncryptionHelper = StarterKit.Utils.EncryptionHelper;
 
 namespace StarterKit.Controllers;
 
@@ -20,7 +22,49 @@ public class LoginController : Controller
     public IActionResult Login([FromBody] LoginBody loginBody)
     {
         // TODO: Impelement login method
+        return StatusCode(501);
+    }
+
+    [HttpPost("/login/admin")]
+    public IActionResult LoginAdmin([FromBody] LoginBody loginBody)
+    {
+        string query = "SELECT COUNT(1) FROM Admin WHERE UserName = @Username AND Password = @Password";
+        bool isAuthenticated = false;
+        using var connection = new SqliteConnection(@"Data Source=webdev.sqlite;");
+        connection.Open();
+
+        using var command = new SqliteCommand(query, connection);
+        command.Parameters.AddWithValue("@Username", loginBody.Username);
+        command.Parameters.AddWithValue("@Password", EncryptionHelper.EncryptPassword(loginBody.Password));
+        int count = Convert.ToInt32(command.ExecuteScalar());
+        isAuthenticated = count > 0;
+        if(isAuthenticated)
+        {
+            return Ok("Logged in as admin");
+        }
         return Unauthorized("Incorrect password");
+    }
+
+    [HttpPost("/login/admin/create")]
+    public IActionResult CreateAdmin([FromBody] LoginBody loginBody)
+    {
+        string query = "INSERT INTO Admin (Username, Password) VALUES (@Username, @Password)";
+        using var connection = new SqliteConnection(@"Data Source=webdev.sqlite;");
+        connection.Open();
+
+        using var command = new SqliteCommand(query, connection);
+        command.Parameters.AddWithValue("@Username", loginBody.Username);
+        command.Parameters.AddWithValue("@AdminId", "999");
+
+        command.Parameters.AddWithValue("@Password", EncryptionHelper.EncryptPassword(loginBody.Password));
+        command.ExecuteNonQuery();
+        return Ok("Admin created");
+    }
+
+    [HttpGet("/login/check")]
+    public IActionResult CheckLogin()
+    {
+        return Ok("Check");
     }
 
     [HttpGet("IsAdminLoggedIn")]
