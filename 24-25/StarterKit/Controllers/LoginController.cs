@@ -1,4 +1,3 @@
-using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using StarterKit.Services;
 using Microsoft.Data.Sqlite;

@@ -4427,19 +4427,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\31640\\.nuget\\packages\\": {}
+    "C:\\Users\\woodf\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Process and Tools\\webdev-semster\\24-25\\StarterKit\\StarterKit.csproj",
+      "projectUniqueName": "C:\\Users\\woodf\\Desktop\\Process and tools\\webdev-semster\\24-25\\StarterKit\\StarterKit.csproj",
       "projectName": "StarterKit",
-      "projectPath": "C:\\Process and Tools\\webdev-semster\\24-25\\StarterKit\\StarterKit.csproj",
-      "packagesPath": "C:\\Users\\31640\\.nuget\\packages\\",
-      "outputPath": "C:\\Process and Tools\\webdev-semster\\24-25\\StarterKit\\obj\\",
+      "projectPath": "C:\\Users\\woodf\\Desktop\\Process and tools\\webdev-semster\\24-25\\StarterKit\\StarterKit.csproj",
+      "packagesPath": "C:\\Users\\woodf\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\woodf\\Desktop\\Process and tools\\webdev-semster\\24-25\\StarterKit\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\31640\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\woodf\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [

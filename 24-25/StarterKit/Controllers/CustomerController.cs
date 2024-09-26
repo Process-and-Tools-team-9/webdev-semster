@@ -1,9 +1,6 @@
-using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using StarterKit.Services;
-using Microsoft.Data.Sqlite;
-using EncryptionHelper = StarterKit.Utils.EncryptionHelper;
-using System.Diagnostics.Contracts;
+
 
 namespace StarterKit.Controllers;
 
@@ -11,14 +8,34 @@ namespace StarterKit.Controllers;
 
 
 public class CustomerController : Controller{
-    [HttpPost("/Create")]
-    public IActionResult Create([FromBody] CustomerBody customerbody){
-        
-        string query = "INSERT INTO Customer (Username, Password) VALUES (@Username, @Password)";
-        using var connection = new SqliteConnection(@"Data Source=webdev.sqlite;");
-        connection.Open();
-        return Ok();
+    private readonly ICustomerService _customerService;
+
+    public CustomerController(ICustomerService customerService)
+    {
+        _customerService = customerService;
     }
+
+    [HttpPost("/AddCustomer")]
+public async Task<IActionResult> CreateCustomer([FromBody] CustomerBody customerBody)
+{
+    if (string.IsNullOrEmpty(customerBody.FirstName) || 
+        string.IsNullOrEmpty(customerBody.LastName) || 
+        string.IsNullOrEmpty(customerBody.Email))
+    {
+        return BadRequest("Username, Password, and Email are required.");
+    }
+
+    try
+    {
+        // Call the asynchronous service method
+        await _customerService.AddCustomerAsync(customerBody);
+        return Ok("Customer added successfully.");
+    }
+    catch (Exception ex)
+    {
+        return StatusCode(500, "Internal server error: " + ex.Message);
+    }
+}
 }
 
 public class CustomerBody{
