@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "LalLSAT4eIkUzu5Iz5ejjsPOjAr4XQm0xML6Qt/buWs=",
+  "Hash": "Q/JzpmdIvtvnC+UeSfOlSUjCZlTNjot3nM4L7t/tMIE=",
   "Source": "StarterKit",
   "BasePath": "_content/StarterKit",
   "Mode": "Default",
@@ -10,17 +10,17 @@
     {
       "Name": "StarterKit\\wwwroot",
       "Source": "StarterKit",
-      "ContentRoot": "C:\\Users\\japja\\OneDrive - Hogeschool Rotterdam\\Documenten\\GitHub\\webdev-semster\\24-25\\StarterKit\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\woodf\\Desktop\\Process and tools\\webdev-semster\\24-25\\StarterKit\\wwwroot\\",
       "BasePath": "_content/StarterKit",
       "Pattern": "**"
     }
   ],
   "Assets": [
     {
-      "Identity": "C:\\Users\\japja\\OneDrive - Hogeschool Rotterdam\\Documenten\\GitHub\\webdev-semster\\24-25\\StarterKit\\obj\\Debug\\net8.0\\scopedcss\\bundle\\StarterKit.styles.css",
+      "Identity": "C:\\Users\\woodf\\Desktop\\Process and tools\\webdev-semster\\24-25\\StarterKit\\obj\\Debug\\net8.0\\scopedcss\\bundle\\StarterKit.styles.css",
       "SourceId": "StarterKit",
       "SourceType": "Computed",
-      "ContentRoot": "C:\\Users\\japja\\OneDrive - Hogeschool Rotterdam\\Documenten\\GitHub\\webdev-semster\\24-25\\StarterKit\\obj\\Debug\\net8.0\\scopedcss\\bundle\\",
+      "ContentRoot": "C:\\Users\\woodf\\Desktop\\Process and tools\\webdev-semster\\24-25\\StarterKit\\obj\\Debug\\net8.0\\scopedcss\\bundle\\",
       "BasePath": "_content/StarterKit",
       "RelativePath": "StarterKit.styles.css",
       "AssetKind": "All",
@@ -33,13 +33,13 @@
       "AssetTraitValue": "ApplicationBundle",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "C:\\Users\\japja\\OneDrive - Hogeschool Rotterdam\\Documenten\\GitHub\\webdev-semster\\24-25\\StarterKit\\obj\\Debug\\net8.0\\scopedcss\\bundle\\StarterKit.styles.css"
+      "OriginalItemSpec": "C:\\Users\\woodf\\Desktop\\Process and tools\\webdev-semster\\24-25\\StarterKit\\obj\\Debug\\net8.0\\scopedcss\\bundle\\StarterKit.styles.css"
     },
     {
-      "Identity": "C:\\Users\\japja\\OneDrive - Hogeschool Rotterdam\\Documenten\\GitHub\\webdev-semster\\24-25\\StarterKit\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\StarterKit.bundle.scp.css",
+      "Identity": "C:\\Users\\woodf\\Desktop\\Process and tools\\webdev-semster\\24-25\\StarterKit\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\StarterKit.bundle.scp.css",
       "SourceId": "StarterKit",
       "SourceType": "Computed",
-      "ContentRoot": "C:\\Users\\japja\\OneDrive - Hogeschool Rotterdam\\Documenten\\GitHub\\webdev-semster\\24-25\\StarterKit\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\",
+      "ContentRoot": "C:\\Users\\woodf\\Desktop\\Process and tools\\webdev-semster\\24-25\\StarterKit\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\",
       "BasePath": "_content/StarterKit",
       "RelativePath": "StarterKit.bundle.scp.css",
       "AssetKind": "All",
@@ -52,13 +52,13 @@
       "AssetTraitValue": "ProjectBundle",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "C:\\Users\\japja\\OneDrive - Hogeschool Rotterdam\\Documenten\\GitHub\\webdev-semster\\24-25\\StarterKit\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\StarterKit.bundle.scp.css"
+      "OriginalItemSpec": "C:\\Users\\woodf\\Desktop\\Process and tools\\webdev-semster\\24-25\\StarterKit\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\StarterKit.bundle.scp.css"
     },
     {
-      "Identity": "C:\\Users\\japja\\OneDrive - Hogeschool Rotterdam\\Documenten\\GitHub\\webdev-semster\\24-25\\StarterKit\\wwwroot\\css\\site.css",
+      "Identity": "C:\\Users\\woodf\\Desktop\\Process and tools\\webdev-semster\\24-25\\StarterKit\\wwwroot\\css\\site.css",
       "SourceId": "StarterKit",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\japja\\OneDrive - Hogeschool Rotterdam\\Documenten\\GitHub\\webdev-semster\\24-25\\StarterKit\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\woodf\\Desktop\\Process and tools\\webdev-semster\\24-25\\StarterKit\\wwwroot\\",
       "BasePath": "_content/StarterKit",
       "RelativePath": "css/site.css",
       "AssetKind": "All",
@@ -74,10 +74,10 @@
       "OriginalItemSpec": "wwwroot\\css\\site.css"
     },
     {
-      "Identity": "C:\\Users\\japja\\OneDrive - Hogeschool Rotterdam\\Documenten\\GitHub\\webdev-semster\\24-25\\StarterKit\\wwwroot\\favicon.ico",
+      "Identity": "C:\\Users\\woodf\\Desktop\\Process and tools\\webdev-semster\\24-25\\StarterKit\\wwwroot\\favicon.ico",
       "SourceId": "StarterKit",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\japja\\OneDrive - Hogeschool Rotterdam\\Documenten\\GitHub\\webdev-semster\\24-25\\StarterKit\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\woodf\\Desktop\\Process and tools\\webdev-semster\\24-25\\StarterKit\\wwwroot\\",
       "BasePath": "_content/StarterKit",
       "RelativePath": "favicon.ico",
       "AssetKind": "All",
@@ -93,10 +93,10 @@
       "OriginalItemSpec": "wwwroot\\favicon.ico"
     },
     {
-      "Identity": "C:\\Users\\japja\\OneDrive - Hogeschool Rotterdam\\Documenten\\GitHub\\webdev-semster\\24-25\\StarterKit\\wwwroot\\images\\portal.jpg",
+      "Identity": "C:\\Users\\woodf\\Desktop\\Process and tools\\webdev-semster\\24-25\\StarterKit\\wwwroot\\images\\portal.jpg",
       "SourceId": "StarterKit",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\japja\\OneDrive - Hogeschool Rotterdam\\Documenten\\GitHub\\webdev-semster\\24-25\\StarterKit\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\woodf\\Desktop\\Process and tools\\webdev-semster\\24-25\\StarterKit\\wwwroot\\",
       "BasePath": "_content/StarterKit",
       "RelativePath": "images/portal.jpg",
       "AssetKind": "All",
@@ -112,10 +112,10 @@
       "OriginalItemSpec": "wwwroot\\images\\portal.jpg"
     },
     {
-      "Identity": "C:\\Users\\japja\\OneDrive - Hogeschool Rotterdam\\Documenten\\GitHub\\webdev-semster\\24-25\\StarterKit\\wwwroot\\js\\main.js",
+      "Identity": "C:\\Users\\woodf\\Desktop\\Process and tools\\webdev-semster\\24-25\\StarterKit\\wwwroot\\js\\main.js",
       "SourceId": "StarterKit",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\japja\\OneDrive - Hogeschool Rotterdam\\Documenten\\GitHub\\webdev-semster\\24-25\\StarterKit\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\woodf\\Desktop\\Process and tools\\webdev-semster\\24-25\\StarterKit\\wwwroot\\",
       "BasePath": "_content/StarterKit",
       "RelativePath": "js/main.js",
       "AssetKind": "All",
@@ -131,10 +131,10 @@
       "OriginalItemSpec": "wwwroot\\js\\main.js"
     },
     {
-      "Identity": "C:\\Users\\japja\\OneDrive - Hogeschool Rotterdam\\Documenten\\GitHub\\webdev-semster\\24-25\\StarterKit\\wwwroot\\lib\\bootstrap.min.css",
+      "Identity": "C:\\Users\\woodf\\Desktop\\Process and tools\\webdev-semster\\24-25\\StarterKit\\wwwroot\\lib\\bootstrap.min.css",
       "SourceId": "StarterKit",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\japja\\OneDrive - Hogeschool Rotterdam\\Documenten\\GitHub\\webdev-semster\\24-25\\StarterKit\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\woodf\\Desktop\\Process and tools\\webdev-semster\\24-25\\StarterKit\\wwwroot\\",
       "BasePath": "_content/StarterKit",
       "RelativePath": "lib/bootstrap.min.css",
       "AssetKind": "All",
