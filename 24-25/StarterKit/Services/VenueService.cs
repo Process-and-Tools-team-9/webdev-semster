@@ -1,0 +1,58 @@
+using System.ComponentModel;
+using StarterKit.Models;
+using StarterKit.Utils;
+using StarterKit.Controllers;
+using Microsoft.Data.Sqlite;
+
+namespace StarterKit.Services;
+
+public class VenueService : IVenueService{
+    private readonly DatabaseContext _context;
+
+    public VenueService(DatabaseContext context){
+        _context = context;
+    }
+
+
+    public async Task AddVenueAsync(VenueBody venueBody)
+    {
+        var query = "INSERT INTO Venue (Name, Capacity) VALUES (@Name, @Capacity);";
+        
+        await using var connection = new SqliteConnection(@"Data Source=webdev.sqlite;");
+        await connection.OpenAsync();
+
+        await using var command = new SqliteCommand(query, connection);
+        command.Parameters.AddWithValue("@Name", venueBody.Name);
+        command.Parameters.AddWithValue("@Capacity", venueBody.Capacity);
+
+        await command.ExecuteNonQueryAsync();
+    }
+
+    public async Task<Venue> GetVenueAsync(int id)
+    {
+        var query = "SELECT * FROM Venue WHERE VenueId = @Id;";
+
+        await using var connection = new SqliteConnection(@"Data Source=webdev.sqlite;");
+        await connection.OpenAsync();
+
+        await using var command = new SqliteCommand(query, connection);
+        command.Parameters.AddWithValue("@Id", id);
+
+        await using var reader = await command.ExecuteReaderAsync();
+
+        if (await reader.ReadAsync())
+        {
+            var venue = new Venue
+            {
+                VenueId = reader.GetInt32(reader.GetOrdinal("VenueId")),
+                Name = reader.GetString(reader.GetOrdinal("Name")),
+                Capacity = reader.GetInt32(reader.GetOrdinal("Capacity"))
+                // Map other properties as needed
+            };
+
+            return venue;
+        }
+
+        return null; // or throw an exception if the venue is not found
+    }
+}

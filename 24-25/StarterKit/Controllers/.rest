@@ -1,0 +1,26 @@
+GET http://localhost:5097/api/v1/Venue/GetVenue/1 HTTP/1.1
+
+
+#########
+
+
+POST http://localhost:5097/api/v1/Venue/AddVenue HTTP/1.1
+content-type: application/json
+
+{
+    "VenueId": 1,
+    "Name": "Venue1",
+    "Capacity": 100
+}
+
+#########
+
+POST http://localhost:5097/api/v1/Customer/AddCustomer HTTP/1.1
+content-type: application/json
+
+{
+    "CustomerId": 1,
+    "FirstName": "Customer1",
+    "LastName": "Customer1",
+    "Email": "joop@joop.joop"                                               
+}
