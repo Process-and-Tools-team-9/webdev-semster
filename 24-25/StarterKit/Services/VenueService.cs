@@ -55,4 +55,32 @@ public class VenueService : IVenueService{
 
         return null; // or throw an exception if the venue is not found
     }
+
+    public async Task UpdateVenueAsync(VenueBody venueBody)
+    {
+        var query = "UPDATE Venue SET VenueId = @VenueId, Name = @Name, Capacity = @Capacity WHERE VenueId = @Id;";
+
+        await using var connection = new SqliteConnection(@"Data Source=webdev.sqlite;");
+        await connection.OpenAsync();
+
+        await using var command = new SqliteCommand(query, connection);
+        command.Parameters.AddWithValue("@Name", venueBody.Name);
+        command.Parameters.AddWithValue("@Capacity", venueBody.Capacity);
+
+        await command.ExecuteNonQueryAsync();
+    }
+
+    public async Task DeleteVenueAsync(int id)
+    {
+        Console.WriteLine("Krugs");
+        var query = "DELETE FROM Venue WHERE VenueId = @Id;";
+
+        await using var connection = new SqliteConnection(@"Data Source=webdev.sqlite;");
+        await connection.OpenAsync();
+
+        await using var command = new SqliteCommand(query, connection);
+        command.Parameters.AddWithValue("@Id", id);
+
+        await command.ExecuteNonQueryAsync();
+    }
 }
