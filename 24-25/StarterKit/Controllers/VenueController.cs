@@ -61,20 +61,23 @@ public class VenueController : Controller{
     [HttpPut("UpdateVenue")]
     public async Task<IActionResult> UpdateVenue([FromBody] VenueBody venueBody)
     {
-        if (string.IsNullOrEmpty(venueBody.Name) || 
-            string.IsNullOrEmpty(venueBody.Capacity.ToString()))
+        if (venueBody.VenueId == null || string.IsNullOrEmpty(venueBody.Name) || 
+            venueBody.Capacity == null)
         {
-            return BadRequest("Name, Capacity, and VenueId are required.");
+            return BadRequest("VenueId, Name, and Capacity are required.");
         }
 
         try
         {
-            // Call the asynchronous service method
             await _venueService.UpdateVenueAsync(venueBody);
             return Ok("Venue updated successfully.");
         }
         catch (Exception ex)
         {
+            if (ex.Message == "No venue with the specified ID exists.")
+            {
+                return NotFound(ex.Message);
+            }
             return StatusCode(500, "Internal server error: " + ex.Message);
         }
     }
@@ -89,6 +92,11 @@ public class VenueController : Controller{
         }
         try
         {
+            var venue = await _venueService.GetVenueAsync(id);
+            if (venue == null)
+            {
+                return NotFound("No venue with the specified ID exists.");
+            }
             // Call the asynchronous service method
             await _venueService.DeleteVenueAsync(id);
             return Ok("Venue deleted successfully.");

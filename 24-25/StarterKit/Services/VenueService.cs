@@ -58,21 +58,37 @@ public class VenueService : IVenueService{
 
     public async Task UpdateVenueAsync(VenueBody venueBody)
     {
-        var query = "UPDATE Venue SET VenueId = @VenueId, Name = @Name, Capacity = @Capacity WHERE VenueId = @Id;";
+        var checkQuery = "SELECT COUNT(1) FROM Venue WHERE VenueId = @VenueId;";
+        var updateQuery = "UPDATE Venue SET Name = @Name, Capacity = @Capacity WHERE VenueId = @VenueId;";
 
         await using var connection = new SqliteConnection(@"Data Source=webdev.sqlite;");
         await connection.OpenAsync();
 
-        await using var command = new SqliteCommand(query, connection);
-        command.Parameters.AddWithValue("@Name", venueBody.Name);
-        command.Parameters.AddWithValue("@Capacity", venueBody.Capacity);
+        // Check if the venue exists
+        await using (var checkCommand = new SqliteCommand(checkQuery, connection))
+        {
+            checkCommand.Parameters.AddWithValue("@VenueId", venueBody.VenueId);
+            var exists = (long)await checkCommand.ExecuteScalarAsync() > 0;
 
-        await command.ExecuteNonQueryAsync();
+            if (!exists)
+            {
+                throw new Exception("No venue with the specified ID exists.");
+            }
+        }
+
+        // Update the venue
+        await using (var updateCommand = new SqliteCommand(updateQuery, connection))
+        {
+            updateCommand.Parameters.AddWithValue("@Name", venueBody.Name);
+            updateCommand.Parameters.AddWithValue("@Capacity", venueBody.Capacity);
+            updateCommand.Parameters.AddWithValue("@VenueId", venueBody.VenueId);
+
+            await updateCommand.ExecuteNonQueryAsync();
+        }
     }
 
     public async Task DeleteVenueAsync(int id)
     {
-        Console.WriteLine("Krugs");
         var query = "DELETE FROM Venue WHERE VenueId = @Id;";
 
         await using var connection = new SqliteConnection(@"Data Source=webdev.sqlite;");
