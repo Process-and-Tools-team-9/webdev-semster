@@ -56,6 +56,34 @@ public class VenueService : IVenueService{
         return null; // or throw an exception if the venue is not found
     }
 
+
+    public async Task<List<Venue>> GetAllVenuesAsync()
+    {
+        var query = "SELECT * FROM Venue;";
+        var venues = new List<Venue>();
+
+        await using var connection = new SqliteConnection(@"Data Source=webdev.sqlite;");
+        await connection.OpenAsync();
+
+        await using var command = new SqliteCommand(query, connection);
+        await using var reader = await command.ExecuteReaderAsync();
+
+        while (await reader.ReadAsync())
+        {
+            var venue = new Venue
+            {
+                VenueId = reader.GetInt32(reader.GetOrdinal("VenueId")),
+                Name = reader.GetString(reader.GetOrdinal("Name")),
+                Capacity = reader.GetInt32(reader.GetOrdinal("Capacity"))
+                // Map other properties as needed
+            };
+
+            venues.Add(venue);
+        }
+
+        return venues;
+    }
+
     public async Task UpdateVenueAsync(VenueBody venueBody)
     {
         var checkQuery = "SELECT COUNT(1) FROM Venue WHERE VenueId = @VenueId;";

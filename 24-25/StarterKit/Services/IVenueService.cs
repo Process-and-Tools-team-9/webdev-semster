@@ -8,4 +8,5 @@ public interface IVenueService{
     Task<Venue> GetVenueAsync(int id);
     Task UpdateVenueAsync(VenueBody venueBody);
     Task DeleteVenueAsync(int id);
+    Task<List<Venue>> GetAllVenuesAsync();
 }
