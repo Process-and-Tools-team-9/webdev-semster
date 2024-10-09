@@ -58,6 +58,22 @@ public class VenueController : Controller{
     }
 
 
+    [HttpGet("GetVenue")]
+    public async Task<IActionResult> GetAllVenues()
+    {
+        try
+        {
+            // Call the asynchronous service method
+            var venues = await _venueService.GetAllVenuesAsync();
+            return Ok(venues);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, "Internal server error: " + ex.Message);
+        }
+    }
+
+
     [HttpPut("UpdateVenue")]
     public async Task<IActionResult> UpdateVenue([FromBody] VenueBody venueBody)
     {
