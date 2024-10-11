@@ -4,8 +4,10 @@ using StarterKit.Services;
 
 namespace StarterKit.Controllers;
 
+[Route("api/v1/Theatre")]
+
 public class TheatreController : Controller{
-    private readonly ITheatreService _TheatreService;
+    private readonly ITheatreService _theatreService;
 
     public TheatreController(ITheatreService theatreService)
     {
@@ -16,7 +18,8 @@ public class TheatreController : Controller{
     public async Task<IActionResult> CreateTheatre([FromBody] Theatre TheatreBody)
     {
         if (string.IsNullOrEmpty(TheatreBody.Title) || 
-            string.IsNullOrEmpty(TheatreBody.Description))
+            string.IsNullOrEmpty(TheatreBody.Description) ||
+            int.IsNegative(TheatreBody.VenueId))
         {
             return BadRequest("Title and Description are required.");
         }
@@ -24,7 +27,7 @@ public class TheatreController : Controller{
         try
         {
             // Call the asynchronous service method
-            await _TheatreService.AddTheatreAsync(TheatreBody);
+            await _theatreService.AddTheatreAsync(TheatreBody);
             return Ok("Theatre added successfully.");
         }
         catch (Exception ex)
@@ -34,7 +37,7 @@ public class TheatreController : Controller{
     }
 
 
-    [HttpGet("GetTheatreShow/{id}")]
+    [HttpGet("GetTheatre/{id}")]
     public async Task<IActionResult> GetTheatre(int id)
     {
         if(id <= 0)
@@ -44,7 +47,7 @@ public class TheatreController : Controller{
         try
         {
             // Call the asynchronous service method
-            var Theatre = await _TheatreService.GetTheatreAsync(id);
+            var Theatre = await _theatreService.GetTheatreAsync(id);
             return Ok(Theatre);
         }
         catch (Exception ex)
@@ -60,7 +63,7 @@ public class TheatreController : Controller{
         try
         {
             // Call the asynchronous service method
-            var Theatres = await _TheatreService.GetAllTheatreAsync();
+            var Theatres = await _theatreService.GetAllTheatreAsync();
             return Ok(Theatres);
         }
         catch (Exception ex)
@@ -80,7 +83,7 @@ public class TheatreController : Controller{
 
         try
         {
-            await _TheatreService.UpdateTheatreAsync(TheatreBody);
+            await _theatreService.UpdateTheatreAsync(TheatreBody);
             return Ok("Theatre updated successfully.");
         }
         catch (Exception ex)
@@ -103,13 +106,13 @@ public class TheatreController : Controller{
         }
         try
         {
-            var Theatre = await _TheatreService.GetTheatreAsync(id);
+            var Theatre = await _theatreService.GetTheatreAsync(id);
             if (Theatre == null)
             {
                 return NotFound("No Theatre with the specified ID exists.");
             }
             // Call the asynchronous service method
-            await _TheatreService.DeleteTheatreAsync(id);
+            await _theatreService.DeleteTheatreAsync(id);
             return Ok("Theatre deleted successfully.");
         }
         catch (Exception ex)
@@ -128,4 +131,6 @@ public class Theatre
     public string? Description { get; set; }
 
     public double Price { get; set; }
+
+    public int VenueId { get; set; }
 }

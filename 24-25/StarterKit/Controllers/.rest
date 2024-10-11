@@ -24,3 +24,21 @@ content-type: application/json
     "LastName": "Customer1",
     "Email": "joop@joop.joop"                                               
 }
+
+
+########
+
+Post http://localhost:5097/api/v1/Theatre/AddTheatre HTTP/1.1
+content-type: application/json
+
+{
+    "Title": "Discover Space",
+    "Description": "An Adventure through the Galaxy",
+    "Price": 13.75,
+    "VenueId": 1
+}
+
+
+########
+
+GET http://localhost:5097/api/v1/Theatre/GetTheatre

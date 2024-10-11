@@ -4,9 +4,9 @@ using StarterKit.Controllers;
 namespace StarterKit.Services;
 
 public interface ITheatreService{
-    Task AddTheatreAsync(Theatre theatreBody);
+    Task AddTheatreAsync(Theatre TheatreBody);
     Task<Theatre> GetTheatreAsync(int id);
-    Task UpdateTheatreAsync(Theatre theatreBody);
+    Task UpdateTheatreAsync(Theatre TheatreBody);
     Task DeleteTheatreAsync(int id);
     Task<List<Theatre>> GetAllTheatreAsync();
 }
