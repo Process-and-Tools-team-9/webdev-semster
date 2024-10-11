@@ -95,7 +95,7 @@ public class TheatreService : ITheatreService{
     public async Task UpdateTheatreAsync(Theatre TheatreBody)
     {
         var checkQuery = "SELECT COUNT(1) FROM TheatreShow WHERE TheatreShowId = @TheatreShowId;";
-        var updateQuery = "UPDATE Theatre SET Title = @Title, Description = @Description WHERE TheatreShowId = @TheatreShowId;";
+        var updateQuery = "UPDATE TheatreShow SET Title = @Title, Description = @Description, Price = @Price, VenueId = @VenueId WHERE TheatreShowId = @TheatreShowId;";
 
         await using var connection = new SqliteConnection(@"Data Source=webdev.sqlite;");
         await connection.OpenAsync();
@@ -119,6 +119,7 @@ public class TheatreService : ITheatreService{
             updateCommand.Parameters.AddWithValue("@Description", TheatreBody.Description);
             updateCommand.Parameters.AddWithValue("@TheatreShowId", TheatreBody.TheatreShowId);
             updateCommand.Parameters.AddWithValue("@Price",TheatreBody.Price);
+            updateCommand.Parameters.AddWithValue("@VenueId",TheatreBody.VenueId);
 
             await updateCommand.ExecuteNonQueryAsync();
         }

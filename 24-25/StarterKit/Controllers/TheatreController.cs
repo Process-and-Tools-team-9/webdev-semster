@@ -76,9 +76,9 @@ public class TheatreController : Controller{
     [HttpPut("UpdateTheatre")]
     public async Task<IActionResult> UpdateTheatre([FromBody] Theatre TheatreBody)
     {
-        if (TheatreBody.TheatreShowId == null || string.IsNullOrEmpty(TheatreBody.Title))
+        if (int.IsNegative(TheatreBody.TheatreShowId))
         {
-            return BadRequest("TheatreShowId, Title are required.");
+            return BadRequest("TheatreShowId");
         }
 
         try
@@ -97,7 +97,7 @@ public class TheatreController : Controller{
     }
 
 
-    [HttpDelete("DeleteTheatreShow/{id}")]
+    [HttpDelete("DeleteTheatre/{id}")]
     public async Task<IActionResult> DeleteTheatre(int id)
     {
         if(id <= 0)
