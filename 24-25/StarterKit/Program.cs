@@ -25,6 +25,7 @@ namespace StarterKit
             builder.Services.AddScoped<ICustomerService, CustomerService>();
             builder.Services.AddScoped<IVenueService, VenueService>();
             builder.Services.AddScoped<ITheatreService, TheatreService>();
+            builder.Services.AddScoped<IReservationService, ReservationService>();
 
             builder.Services.AddDbContext<DatabaseContext>(
                 options => options.UseSqlite(builder.Configuration.GetConnectionString("SqlLiteDb")));
