@@ -16,7 +16,7 @@ public class VenueController : Controller{
     }
 
 
-    [HttpPost("AddVenue")]
+    [HttpPost]
     public async Task<IActionResult> CreateVenue([FromBody] VenueBody venueBody)
     {
         if (string.IsNullOrEmpty(venueBody.Name) || 
@@ -24,57 +24,43 @@ public class VenueController : Controller{
         {
             return BadRequest("Name and Capacity are required.");
         }
-
-        try
+        if(!await _venueService.AddVenueAsync(venueBody))
         {
-            // Call the asynchronous service method
-            await _venueService.AddVenueAsync(venueBody);
-            return Ok("Venue added successfully.");
+            return BadRequest("Error adding venue.");
         }
-        catch (Exception ex)
-        {
-            return StatusCode(500, "Internal server error: " + ex.Message);
-        }
+        return Ok("Venue added successfully.");
     }
 
 
-    [HttpGet("GetVenue/{id}")]
+    [HttpGet("{id}")]
     public async Task<IActionResult> GetVenue(int id)
     {
         if(id <= 0)
         {
             return BadRequest("Venue ID is required.");
         }
-        try
+        var venue = await _venueService.GetVenueAsync(id);
+        if(venue == null)
         {
-            // Call the asynchronous service method
-            var venue = await _venueService.GetVenueAsync(id);
-            return Ok(venue);
+            return NotFound("No venue with the specified ID exists.");
         }
-        catch (Exception ex)
-        {
-            return StatusCode(500, "Internal server error: " + ex.Message);
-        }
+        return Ok(venue);
     }
 
 
-    [HttpGet("GetVenue")]
+    [HttpGet]
     public async Task<IActionResult> GetAllVenues()
     {
-        try
+        var venues = await _venueService.GetAllVenuesAsync();
+        if(venues == null)
         {
-            // Call the asynchronous service method
-            var venues = await _venueService.GetAllVenuesAsync();
-            return Ok(venues);
+            return NotFound("No venues found.");
         }
-        catch (Exception ex)
-        {
-            return StatusCode(500, "Internal server error: " + ex.Message);
-        }
+        return Ok(venues);
     }
 
 
-    [HttpPut("UpdateVenue")]
+    [HttpPut]
     public async Task<IActionResult> UpdateVenue([FromBody] VenueBody venueBody)
     {
         if (venueBody.VenueId == null || string.IsNullOrEmpty(venueBody.Name) || 
@@ -82,45 +68,26 @@ public class VenueController : Controller{
         {
             return BadRequest("VenueId, Name, and Capacity are required.");
         }
-
-        try
+        if(!await _venueService.UpdateVenueAsync(venueBody))
         {
-            await _venueService.UpdateVenueAsync(venueBody);
-            return Ok("Venue updated successfully.");
+            return NotFound("No venue with the specified ID exists.");
         }
-        catch (Exception ex)
-        {
-            if (ex.Message == "No venue with the specified ID exists.")
-            {
-                return NotFound(ex.Message);
-            }
-            return StatusCode(500, "Internal server error: " + ex.Message);
-        }
+        return Ok("Venue updated successfully.");
     }
 
 
-    [HttpDelete("DeleteVenue/{id}")]
+    [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteVenue(int id)
     {
         if(id <= 0)
         {
             return BadRequest("Venue ID is required.");
         }
-        try
+        if(!await _venueService.DeleteVenueAsync(id))
         {
-            var venue = await _venueService.GetVenueAsync(id);
-            if (venue == null)
-            {
-                return NotFound("No venue with the specified ID exists.");
-            }
-            // Call the asynchronous service method
-            await _venueService.DeleteVenueAsync(id);
-            return Ok("Venue deleted successfully.");
+            return NotFound("No venue with the specified ID exists.");
         }
-        catch (Exception ex)
-        {
-            return StatusCode(500, "Internal server error: " + ex.Message);
-        }
+        return Ok("Venue deleted successfully.");
     }
 }
 

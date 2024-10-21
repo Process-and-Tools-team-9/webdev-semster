@@ -28,57 +28,43 @@ public class ReservationController : Controller
         {
             return BadRequest("AmountOfTickets, CustomerId, and TheatreShowDateId are required and must be greater than zero.");
         }
-
-        try
+        if(!await _reservationService.AddReservationAsync(reservationBody))
         {
-            // Call the asynchronous service method
-            await _reservationService.AddReservationAsync(reservationBody);
-            return Ok("Reservation added successfully.");
+            return BadRequest("Error adding reservation.");
         }
-        catch (Exception ex)
-        {
-            return StatusCode(500, "Internal server error: " + ex.Message);
-        }
+        return Ok("Reservation added successfully.");
     }
 
 
-    [HttpGet("GetReservation/{id}")]
+    [HttpGet("{id}")]
     public async Task<IActionResult> GetReservation(int id)
     {
         if (id <= 0)
         {
             return BadRequest("Reservation ID is required and must be greater than zero.");
         }
-        try
+        var reservation = await _reservationService.GetReservationAsync(id);
+        if (reservation == null)
         {
-            // Call the asynchronous service method
-            var reservation = await _reservationService.GetReservationAsync(id);
-            return Ok(reservation);
+            return NotFound("No reservation with the specified ID exists.");
         }
-        catch (Exception ex)
-        {
-            return StatusCode(500, "Internal server error: " + ex.Message);
-        }
+        return Ok(reservation);
     }
 
 
-    [HttpGet("GetReservation")]
+    [HttpGet]
     public async Task<IActionResult> GetAllReservations()
     {
-        try
+        var reservations = await _reservationService.GetAllReservationsAsync();
+        if (reservations == null)
         {
-            // Call the asynchronous service method
-            var reservations = await _reservationService.GetAllReservationsAsync();
-            return Ok(reservations);
+            return NotFound("No reservations found.");
         }
-        catch (Exception ex)
-        {
-            return StatusCode(500, "Internal server error: " + ex.Message);
-        }
+        return Ok(reservations);
     }
 
 
-    [HttpPut("UpdateReservation")]
+    [HttpPut]
     public async Task<IActionResult> UpdateReservation([FromBody] ReservationBody reservationBody)
     {
         if (reservationBody.ReservationId == 0 || reservationBody.AmountOfTickets <= 0 || 
@@ -87,44 +73,26 @@ public class ReservationController : Controller
             return BadRequest("ReservationId, AmountOfTickets, CustomerId, and TheatreShowDateId are required and must be greater than zero.");
         }
 
-        try
+        if(!await _reservationService.UpdateReservationAsync(reservationBody))
         {
-            await _reservationService.UpdateReservationAsync(reservationBody);
-            return Ok("Reservation updated successfully.");
+            return NotFound("No reservation with the specified ID exists.");
         }
-        catch (Exception ex)
-        {
-            if (ex.Message == "No reservation with the specified ID exists.")
-            {
-                return NotFound(ex.Message);
-            }
-            return StatusCode(500, "Internal server error: " + ex.Message);
-        }
+        return Ok("Reservation updated successfully.");
     }
 
 
-    [HttpDelete("DeleteReservation/{id}")]
+    [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteReservation(int id)
     {
         if (id <= 0)
         {
             return BadRequest("Reservation ID is required and must be greater than zero.");
         }
-        try
+        if(!await _reservationService.DeleteReservationAsync(id))
         {
-            var reservation = await _reservationService.GetReservationAsync(id);
-            if (reservation == null)
-            {
-                return NotFound("No reservation with the specified ID exists.");
-            }
-            // Call the asynchronous service method
-            await _reservationService.DeleteReservationAsync(id);
-            return Ok("Reservation deleted successfully.");
+            return NotFound("No reservation with the specified ID exists.");
         }
-        catch (Exception ex)
-        {
-            return StatusCode(500, "Internal server error: " + ex.Message);
-        }
+        return Ok("Reservation deleted successfully.");
     }
 }
 

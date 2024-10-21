@@ -3,6 +3,7 @@ using StarterKit.Models;
 using StarterKit.Utils;
 using StarterKit.Controllers;
 using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 
 namespace StarterKit.Services;
 
@@ -14,7 +15,7 @@ public class VenueService : IVenueService{
     }
 
 
-    public async Task AddVenueAsync(VenueBody venueBody)
+    public async Task<bool> AddVenueAsync(VenueBody venueBody)
     {
         var query = "INSERT INTO Venue (Name, Capacity) VALUES (@Name, @Capacity);";
         
@@ -25,66 +26,32 @@ public class VenueService : IVenueService{
         command.Parameters.AddWithValue("@Name", venueBody.Name);
         command.Parameters.AddWithValue("@Capacity", venueBody.Capacity);
 
-        await command.ExecuteNonQueryAsync();
+        var rowsAffected = await command.ExecuteNonQueryAsync();
+        return rowsAffected > 0;
     }
 
     public async Task<Venue> GetVenueAsync(int id)
     {
-        var query = "SELECT * FROM Venue WHERE VenueId = @Id;";
-
-        await using var connection = new SqliteConnection(@"Data Source=webdev.sqlite;");
-        await connection.OpenAsync();
-
-        await using var command = new SqliteCommand(query, connection);
-        command.Parameters.AddWithValue("@Id", id);
-
-        await using var reader = await command.ExecuteReaderAsync();
-
-        if (await reader.ReadAsync())
+        var vanue = await _context.Venue.Where(x => x.VenueId == id).FirstOrDefaultAsync();
+        if(vanue == null)
         {
-            var venue = new Venue
-            {
-                VenueId = reader.GetInt32(reader.GetOrdinal("VenueId")),
-                Name = reader.GetString(reader.GetOrdinal("Name")),
-                Capacity = reader.GetInt32(reader.GetOrdinal("Capacity"))
-                // Map other properties as needed
-            };
-
-            return venue;
+            return null;
         }
-
-        return null; // or throw an exception if the venue is not found
+        return vanue;
     }
 
 
     public async Task<List<Venue>> GetAllVenuesAsync()
     {
-        var query = "SELECT * FROM Venue;";
-        var venues = new List<Venue>();
-
-        await using var connection = new SqliteConnection(@"Data Source=webdev.sqlite;");
-        await connection.OpenAsync();
-
-        await using var command = new SqliteCommand(query, connection);
-        await using var reader = await command.ExecuteReaderAsync();
-
-        while (await reader.ReadAsync())
+        var venues = await _context.Venue.ToListAsync();
+        if(venues == null)
         {
-            var venue = new Venue
-            {
-                VenueId = reader.GetInt32(reader.GetOrdinal("VenueId")),
-                Name = reader.GetString(reader.GetOrdinal("Name")),
-                Capacity = reader.GetInt32(reader.GetOrdinal("Capacity"))
-                // Map other properties as needed
-            };
-
-            venues.Add(venue);
+            return null;
         }
-
         return venues;
     }
 
-    public async Task UpdateVenueAsync(VenueBody venueBody)
+    public async Task<bool> UpdateVenueAsync(VenueBody venueBody)
     {
         var checkQuery = "SELECT COUNT(1) FROM Venue WHERE VenueId = @VenueId;";
         var updateQuery = "UPDATE Venue SET Name = @Name, Capacity = @Capacity WHERE VenueId = @VenueId;";
@@ -100,7 +67,7 @@ public class VenueService : IVenueService{
 
             if (!exists)
             {
-                throw new Exception("No venue with the specified ID exists.");
+                return false;
             }
         }
 
@@ -111,20 +78,20 @@ public class VenueService : IVenueService{
             updateCommand.Parameters.AddWithValue("@Capacity", venueBody.Capacity);
             updateCommand.Parameters.AddWithValue("@VenueId", venueBody.VenueId);
 
-            await updateCommand.ExecuteNonQueryAsync();
+            var rowsAffected = await updateCommand.ExecuteNonQueryAsync();
+            return rowsAffected > 0;
         }
     }
 
-    public async Task DeleteVenueAsync(int id)
+    public async Task<bool> DeleteVenueAsync(int id)
     {
-        var query = "DELETE FROM Venue WHERE VenueId = @Id;";
-
-        await using var connection = new SqliteConnection(@"Data Source=webdev.sqlite;");
-        await connection.OpenAsync();
-
-        await using var command = new SqliteCommand(query, connection);
-        command.Parameters.AddWithValue("@Id", id);
-
-        await command.ExecuteNonQueryAsync();
+        var venToRemove = await _context.Venue.Where(x => x.VenueId == id).FirstOrDefaultAsync();
+        if(venToRemove == null)
+        {
+            return false;
+        }
+        _context.Venue.Remove(venToRemove);
+        await _context.SaveChangesAsync();
+        return true;
     }
 }

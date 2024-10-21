@@ -4,9 +4,9 @@ using StarterKit.Controllers;
 namespace StarterKit.Services;
 
 public interface IVenueService{
-    Task AddVenueAsync(VenueBody venueBody);
+    Task<bool> AddVenueAsync(VenueBody venueBody);
     Task<Venue> GetVenueAsync(int id);
-    Task UpdateVenueAsync(VenueBody venueBody);
-    Task DeleteVenueAsync(int id);
+    Task<bool> UpdateVenueAsync(VenueBody venueBody);
+    Task<bool> DeleteVenueAsync(int id);
     Task<List<Venue>> GetAllVenuesAsync();
 }

@@ -3,6 +3,7 @@ using StarterKit.Models;
 using StarterKit.Utils;
 using StarterKit.Controllers;
 using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 
 namespace StarterKit.Services;
 
@@ -16,7 +17,7 @@ public class ReservationService : IReservationService
     }
 
 
-    public async Task AddReservationAsync(ReservationBody reservationBody)
+    public async Task<bool> AddReservationAsync(ReservationBody reservationBody)
     {
         var query = "INSERT INTO Reservation (ReservationId, AmountOfTickets, Used, CustomerId, TheatreShowDateId) VALUES (@ReservationId, @AmountOfTickets, @Used, @CustomerId, @TheatreShowDateId);";
         
@@ -30,68 +31,37 @@ public class ReservationService : IReservationService
         command.Parameters.AddWithValue("@CustomerId", reservationBody.CustomerId);
         command.Parameters.AddWithValue("@TheatreShowDateId", reservationBody.TheatreShowDateId);
 
-        await command.ExecuteNonQueryAsync();
+        var rowsAffected = await command.ExecuteNonQueryAsync();
+        return rowsAffected > 0;
     }
 
 
-    public async Task<List<Reservation>> GetAllReservationsAsync()
+#pragma warning disable CS8613 // Nullability of reference types in return type doesn't match implicitly implemented member.
+    public async Task<List<Reservation>?> GetAllReservationsAsync()
+#pragma warning restore CS8613 // Nullability of reference types in return type doesn't match implicitly implemented member.
     {
-        var query = "SELECT * FROM Reservation;";
-        var reservations = new List<Reservation>();
-
-        await using var connection = new SqliteConnection(@"Data Source=webdev.sqlite;");
-        await connection.OpenAsync();
-
-        await using var command = new SqliteCommand(query, connection);
-        await using var reader = await command.ExecuteReaderAsync();
-
-        while (await reader.ReadAsync())
+        var reservations = await _context.Reservation.ToListAsync();
+        if(reservations == null)
         {
-            var reservation = new Reservation
-            {
-                ReservationId = reader.GetInt32(reader.GetOrdinal("ReservationId")),
-                AmountOfTickets = reader.GetInt32(reader.GetOrdinal("AmountOfTickets")),
-                Used = reader.GetBoolean(reader.GetOrdinal("Used")),
-                // Map other properties as needed
-            };
-
-            reservations.Add(reservation);
+            return null;
         }
-
         return reservations;
     }
 
-
     public async Task<Reservation> GetReservationAsync(int id)
     {
-        var query = "SELECT * FROM Reservation WHERE ReservationId = @ReservationId;";
-
-        await using var connection = new SqliteConnection(@"Data Source=webdev.sqlite;");
-        await connection.OpenAsync();
-
-        await using var command = new SqliteCommand(query, connection);
-        command.Parameters.AddWithValue("@Id", id);
-
-        await using var reader = await command.ExecuteReaderAsync();
-
-        if (await reader.ReadAsync())
+        var reservation = await _context.Reservation.Where(x => x.ReservationId == id).FirstOrDefaultAsync();
+        if(reservation == null)
         {
-            var reservation = new Reservation
-            {
-                ReservationId = reader.GetInt32(reader.GetOrdinal("ReservationId")),
-                AmountOfTickets = reader.GetInt32(reader.GetOrdinal("AmountOfTickets")),
-                Used = reader.GetBoolean(reader.GetOrdinal("Used")),
-                // Map other properties as needed
-            };
-
-            return reservation;
+#pragma warning disable CS8603 // Possible null reference return.
+            return null;
+#pragma warning restore CS8603 // Possible null reference return.
         }
-
-        throw new Exception("No reservation with the specified ID exists.");
+        return reservation;
     }
 
 
-    public async Task UpdateReservationAsync(ReservationBody reservationBody)
+    public async Task<bool> UpdateReservationAsync(ReservationBody reservationBody)
     {
         var checkQuery = "SELECT COUNT(1) FROM Reservation WHERE ReservationId = @ReservationId;";
         var updateQuery = "UPDATE Reservation SET AmountOfTickets = @AmountOfTickets, Used = @Used, CustomerId = @CustomerId, TheatreShowDateId = @TheatreShowDateId WHERE ReservationId = @ReservationId;";
@@ -103,11 +73,13 @@ public class ReservationService : IReservationService
         await using (var checkCommand = new SqliteCommand(checkQuery, connection))
         {
             checkCommand.Parameters.AddWithValue("@ReservationId", reservationBody.ReservationId);
+#pragma warning disable CS8605 // Unboxing a possibly null value.
             var exists = (long)await checkCommand.ExecuteScalarAsync() > 0;
+#pragma warning restore CS8605 // Unboxing a possibly null value.
 
             if (!exists)
             {
-                throw new Exception("No reservation with the specified ID exists.");
+                return false;
             }
         }
 
@@ -120,21 +92,21 @@ public class ReservationService : IReservationService
             updateCommand.Parameters.AddWithValue("@TheatreShowDateId", reservationBody.TheatreShowDateId);
             updateCommand.Parameters.AddWithValue("@ReservationId", reservationBody.ReservationId);
 
-            await updateCommand.ExecuteNonQueryAsync();
+            var rowsAffected = await updateCommand.ExecuteNonQueryAsync();
+            return rowsAffected > 0;
         }
     }
 
 
-    public async Task DeleteReservationAsync(int id)
+    public async Task<bool> DeleteReservationAsync(int id)
     {
-        var query = "DELETE FROM Reservation WHERE ReservationId = @Id;";
-
-        await using var connection = new SqliteConnection(@"Data Source=webdev.sqlite;");
-        await connection.OpenAsync();
-
-        await using var command = new SqliteCommand(query, connection);
-        command.Parameters.AddWithValue("@Id", id);
-
-        await command.ExecuteNonQueryAsync();
+        var resToDelete = await _context.Reservation.Where(x => x.ReservationId == id).FirstOrDefaultAsync();
+        if(resToDelete == null)
+        {
+            return false;
+        }
+        _context.Reservation.Remove(resToDelete);
+        await _context.SaveChangesAsync();
+        return true;
     }
 }
