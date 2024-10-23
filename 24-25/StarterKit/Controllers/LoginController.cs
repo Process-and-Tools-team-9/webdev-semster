@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using StarterKit.Services;
 using Microsoft.Data.Sqlite;
 using EncryptionHelper = StarterKit.Utils.EncryptionHelper;
+using StarterKit.Models;
 
 namespace StarterKit.Controllers;
 
@@ -25,39 +26,42 @@ public class LoginController : Controller
     }
 
     [HttpPost("/login/admin")]
-    public IActionResult LoginAdmin([FromBody] LoginBody loginBody)
+    public async Task<IActionResult> LoginAdmin([FromBody] LoginBody loginBody)
     {
-        string query = "SELECT COUNT(1) FROM Admin WHERE UserName = @Username AND Password = @Password";
-        bool isAuthenticated = false;
-        using var connection = new SqliteConnection(@"Data Source=webdev.sqlite;");
-        connection.Open();
-
-        using var command = new SqliteCommand(query, connection);
-        command.Parameters.AddWithValue("@Username", loginBody.Username);
-        command.Parameters.AddWithValue("@Password", EncryptionHelper.EncryptPassword(loginBody.Password));
-        int count = Convert.ToInt32(command.ExecuteScalar());
-        isAuthenticated = count > 0;
-        if(isAuthenticated)
+        if (string.IsNullOrEmpty(loginBody.Username) || string.IsNullOrEmpty(loginBody.Password))
         {
-            return Ok("Logged in as admin");
+            return BadRequest("Username and password must not be empty.");
         }
-        return Unauthorized("Incorrect password");
+        LoginStatus status = await _loginService.CheckPassword(loginBody.Username, loginBody.Password);
+        if(status == LoginStatus.Success)
+        {
+            HttpContext.Session.SetString(ADMIN_SESSION_KEY.adminLoggedIn.ToString(), loginBody.Username);
+            return Ok("Logged in");
+        }
+        if(status == LoginStatus.IncorrectUsername)
+        {
+            return Unauthorized("Incorrect username");
+        }
+        if(status == LoginStatus.IncorrectPassword)
+        {
+            return Unauthorized("Incorrect password");
+        }
+        return BadRequest("An unexpected error occurred.");
     }
 
     [HttpPost("/login/admin/create")]
-    public IActionResult CreateAdmin([FromBody] LoginBody loginBody)
+    public async Task<IActionResult> CreateAdmin([FromBody] Admin admin)
     {
-        string query = "INSERT INTO Admin (Username, Password) VALUES (@Username, @Password)";
-        using var connection = new SqliteConnection(@"Data Source=webdev.sqlite;");
-        connection.Open();
+        if (string.IsNullOrEmpty(admin.UserName) || string.IsNullOrEmpty(admin.Password) || string.IsNullOrEmpty(admin.Email))
+        {
+            return BadRequest("Username, Email and password must not be empty.");
+        }
+        if(!await _loginService.CreateAdminDB(admin))
+        {
+            return BadRequest("Admin already exists.");
+        }
+        return Ok("Admin created successfully.");
 
-        using var command = new SqliteCommand(query, connection);
-        command.Parameters.AddWithValue("@Username", loginBody.Username);
-        command.Parameters.AddWithValue("@AdminId", "999");
-
-        command.Parameters.AddWithValue("@Password", EncryptionHelper.EncryptPassword(loginBody.Password));
-        command.ExecuteNonQuery();
-        return Ok("Admin created");
     }
 
     [HttpGet("/login/check")]
@@ -70,15 +74,20 @@ public class LoginController : Controller
     public IActionResult IsAdminLoggedIn()
     {
         // TODO: This method should return a status 200 OK when logged in, else 403, unauthorized
-        return Unauthorized("You are not logged in");
+        string username = HttpContext.Session.GetString(ADMIN_SESSION_KEY.adminLoggedIn.ToString());
+        if (username != null)
+        {
+            return Ok(new { IsLoggedIn = true, AdminUserName = username });
+        }
+        return Forbid("Admin is not logged in.");
     }
 
     [HttpGet("Logout")]
     public IActionResult Logout()
     {
-        return Ok("Logged out");
+        HttpContext.Session.Remove(ADMIN_SESSION_KEY.adminLoggedIn.ToString());
+        return Ok("Logged out successfully.");
     }
-
 }
 
 public class LoginBody
