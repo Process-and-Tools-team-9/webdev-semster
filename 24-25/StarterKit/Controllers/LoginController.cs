@@ -18,16 +18,25 @@ public class LoginController : Controller
         _loginService = loginService;
     }
 
-    [HttpPost("Login")]
+    [HttpPost]
     public IActionResult Login([FromBody] LoginBody loginBody)
     {
         // TODO: Impelement login method
         return StatusCode(501);
     }
 
-    [HttpPost("/login/admin")]
+    [AdminFilter]
+    [HttpPost("Admin")]
     public async Task<IActionResult> LoginAdmin([FromBody] LoginBody loginBody)
     {
+        if (IsAdminLoggedIn().GetType() == typeof(OkObjectResult)) 
+        {
+            return BadRequest("An admin is already logged in.");
+        }
+        if(IsAdminLoggedInCheck())
+        {
+            return BadRequest("Admin is already logged in.");
+        }
         if (string.IsNullOrEmpty(loginBody.Username) || string.IsNullOrEmpty(loginBody.Password))
         {
             return BadRequest("Username and password must not be empty.");
@@ -49,7 +58,8 @@ public class LoginController : Controller
         return BadRequest("An unexpected error occurred.");
     }
 
-    [HttpPost("/login/admin/create")]
+    [AdminFilter]
+    [HttpPost("Admin/Create")]
     public async Task<IActionResult> CreateAdmin([FromBody] Admin admin)
     {
         if (string.IsNullOrEmpty(admin.UserName) || string.IsNullOrEmpty(admin.Password) || string.IsNullOrEmpty(admin.Email))
@@ -64,27 +74,41 @@ public class LoginController : Controller
 
     }
 
-    [HttpGet("/login/check")]
+    [HttpGet("check")]
     public IActionResult CheckLogin()
     {
         return Ok("Check");
     }
 
+    // TODO: This method should return a status 200 OK when logged in, else 403, unauthorized
+    [AdminFilter]
     [HttpGet("IsAdminLoggedIn")]
     public IActionResult IsAdminLoggedIn()
     {
-        // TODO: This method should return a status 200 OK when logged in, else 403, unauthorized
         string username = HttpContext.Session.GetString(ADMIN_SESSION_KEY.adminLoggedIn.ToString());
+        
         if (username != null)
         {
             return Ok(new { IsLoggedIn = true, AdminUserName = username });
         }
-        return Forbid("Admin is not logged in.");
+        
+        return Unauthorized(new { IsLoggedIn = false, Message = "Admin is not logged in." });
     }
 
-    [HttpGet("Logout")]
+    private bool IsAdminLoggedInCheck()
+    {
+        string username = HttpContext.Session.GetString(ADMIN_SESSION_KEY.adminLoggedIn.ToString());
+        return username != null;
+    }
+
+    [AdminFilter]
+    [HttpPost("AdminLogout")]
     public IActionResult Logout()
     {
+        if(!IsAdminLoggedInCheck())
+        {
+            return BadRequest("Admin is not logged in.");
+        }
         HttpContext.Session.Remove(ADMIN_SESSION_KEY.adminLoggedIn.ToString());
         return Ok("Logged out successfully.");
     }

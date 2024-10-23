@@ -20,6 +20,7 @@ namespace StarterKit
                 options.Cookie.HttpOnly = true; 
                 options.Cookie.IsEssential = true; 
             });
+            builder.Services.AddScoped<AdminFilter>();
 
             builder.Services.AddScoped<ILoginService, LoginService>();
             builder.Services.AddScoped<ICustomerService, CustomerService>();
