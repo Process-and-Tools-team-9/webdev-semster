@@ -1,26 +1,109 @@
-GET http://localhost:5097/api/v1/Venue/GetVenue/1 HTTP/1.1
+########LOGINCONTROLLER########
 
-
-#########
-
-
-POST http://localhost:5097/api/v1/Venue/AddVenue HTTP/1.1
-content-type: application/json
+POST http://localhost:5097/api/v1/Login/Admin HTTP/1.1
+AdminKey: Password123
+Content-Type: application/json
 
 {
-    "VenueId": 1,
-    "Name": "Venue1",
-    "Capacity": 100
+  "Username": "admin1",
+  "Password": "password"
 }
 
-#########
+######## ISADMINLOGGEDIN
 
-POST http://localhost:5097/api/v1/Customer/AddCustomer HTTP/1.1
-content-type: application/json
+GET http://localhost:5097/api/v1/Login/IsAdminLoggedIn HTTP/1.1
+AdminKey: Password123
+
+######## ADMINLOGOUT
+
+
+POST http://localhost:5097/api/v1/Login/AdminLogout HTTP/1.1
+AdminKey: Password123
+
+
+######## THEATRE SHOW CONTROLLER ########
+
+### Create a New Theatre Show
+POST http://localhost:5097/api/v1/TheatreShow HTTP/1.1
+Content-Type: application/json
 
 {
-    "CustomerId": 1,
-    "FirstName": "Customer1",
-    "LastName": "Customer1",
-    "Email": "joop@joop.joop"                                               
+    "Title": "New Show",
+    "description": "An exciting new theatre show",
+    "dates": [
+        "2024-10-30T19:00:00",
+        "2024-10-31T20:00:00"
+    ],
+    "venue": {
+        "Name": "Main Theatre",
+        "Capacity": 200,
+        "TheatreShows": []
+    }
 }
+
+### Attempt to Create Theatre Show with Missing Title
+POST http://localhost:5097/api/v1/TheatreShow HTTP/1.1
+Content-Type: application/json
+
+{
+    "description": "An exciting new theatre show",
+    "dates": [
+        "2024-10-30T19:00:00",
+        "2024-10-31T20:00:00"
+    ],
+    "venue": {
+        "Name": "Main Theatre",
+        "Capacity": 200
+    }
+}
+
+### Get Theatre Show by ID
+GET http://localhost:5097/api/v1/TheatreShow/1 HTTP/1.1
+
+### Get Non-Existent Theatre Show by ID
+GET http://localhost:5097/api/v1/TheatreShow/1 HTTP/1.1
+
+### Get All Theatre Shows
+GET http://localhost:5097/api/v1/TheatreShow HTTP/1.1
+AdminKey: Password123
+
+### Update Theatre Show
+PUT http://localhost:5097/api/v1/TheatreShow HTTP/1.1
+Content-Type: application/json
+AdminKey: Password123
+
+{
+    "TheatreShowId": 1,
+    "Title": "Updated Show",
+    "description": "An updated description for the show",
+    "Price": 50.0,
+    "dates": [
+        "2024-11-15T19:00:00"
+    ]
+}
+
+### Attempt to Update Non-Existent Theatre Show
+PUT http://localhost:5097/api/v1/TheatreShow HTTP/1.1
+Content-Type: application/json
+AdminKey: Password123
+
+{
+    "TheatreShowId": 999,
+    "Title": "Non-Existent Show",
+    "description": "Trying to update a show that doesn't exist",
+    "Price": 50.0,
+    "dates": [
+        "2024-11-15T19:00:00"
+    ]
+}
+
+### Delete Theatre Show
+DELETE http://localhost:5097/api/v1/TheatreShow/1 HTTP/1.1
+
+### Attempt to Delete Non-Existent Theatre Show
+DELETE http://localhost:5097/api/v1/TheatreShow/999 HTTP/1.1
+AdminKey: Password123
+
+### Attempt to Delete with Invalid ID
+DELETE http://localhost:5097/api/v1/TheatreShow/0 HTTP/1.1
+AdminKey: Password123

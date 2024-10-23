@@ -95,7 +95,7 @@ public class LoginController : Controller
         return Unauthorized(new { IsLoggedIn = false, Message = "Admin is not logged in." });
     }
 
-    private bool IsAdminLoggedInCheck()
+    public bool IsAdminLoggedInCheck()
     {
         string username = HttpContext.Session.GetString(ADMIN_SESSION_KEY.adminLoggedIn.ToString());
         return username != null;
