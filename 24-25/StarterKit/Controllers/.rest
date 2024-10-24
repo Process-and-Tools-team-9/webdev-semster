@@ -46,15 +46,13 @@ POST http://localhost:5097/api/v1/TheatreShow HTTP/1.1
 Content-Type: application/json
 
 {
-    "description": "An exciting new theatre show",
-    "dates": [
+    "Title": "TS 1",
+    "Description": "An exciting new theatre show",
+    "Venue": {},
+    "Dates": [
         "2024-10-30T19:00:00",
         "2024-10-31T20:00:00"
-    ],
-    "venue": {
-        "Name": "Main Theatre",
-        "Capacity": 200
-    }
+    ]
 }
 
 ### Get Theatre Show by ID
@@ -65,7 +63,6 @@ GET http://localhost:5097/api/v1/TheatreShow/1 HTTP/1.1
 
 ### Get All Theatre Shows
 GET http://localhost:5097/api/v1/TheatreShow HTTP/1.1
-AdminKey: Password123
 
 ### Update Theatre Show
 PUT http://localhost:5097/api/v1/TheatreShow HTTP/1.1

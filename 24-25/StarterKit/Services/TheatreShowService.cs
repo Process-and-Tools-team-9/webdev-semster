@@ -16,7 +16,6 @@ public class TheatreService : ITheatreService
         _context = context;
     }
 
-
    public async Task<bool> Add(TheatreShowBody theatreShowBody)
     {   
         TheatreShow newTheatreShow = new TheatreShow();
@@ -24,9 +23,9 @@ public class TheatreService : ITheatreService
         List<TheatreShowDate> ToBetheatreShowDates = new List<TheatreShowDate>(){};
         Venue venueToAdd = new Venue();
 
-        if (theatreShowBody.venue == null)
+        if (theatreShowBody.Venue == null)
         {
-            theatreShowBody.venue = new Venue
+            theatreShowBody.Venue = new Venue
             {
                 Name = "Default Venue",
                 Capacity = 100,
@@ -35,10 +34,10 @@ public class TheatreService : ITheatreService
         }
         else
         {
-            venueToAdd = theatreShowBody.venue;
+            venueToAdd = theatreShowBody.Venue;
         }
 
-        foreach (DateTime time in theatreShowBody.dates)
+        foreach (DateTime time in theatreShowBody.Dates)
         {
             ToBetheatreShowDates.Add(new TheatreShowDate
             {
@@ -49,7 +48,7 @@ public class TheatreService : ITheatreService
         }
 
         newTheatreShow.Title = theatreShowBody.Title;
-        newTheatreShow.Description = theatreShowBody.description;
+        newTheatreShow.Description = theatreShowBody.Description;
         newTheatreShow.theatreShowDates = ToBetheatreShowDates;
         newTheatreShow.Venue = venueToAdd;
         newTheatreShow.Price = 0;
@@ -67,24 +66,68 @@ public class TheatreService : ITheatreService
         }
     }
 
-
-    public async Task<TheatreShow> GetById(int id)
+    public async Task<object?> GetById(int id)
     {
-        var theatreShow = await _context.TheatreShow
-        .Include(ts => ts.Venue)
-        .FirstOrDefaultAsync(x => x.TheatreShowId == id);
-        return theatreShow;
+        return await _context.TheatreShow
+            .Where(x => x.TheatreShowId == id)
+            .Select(ts => new {
+                ts.TheatreShowId,
+                ts.Title,
+                ts.Description,
+                ts.Price,
+                Venue = new {
+                    ts.Venue.VenueId,
+                    ts.Venue.Name,
+                    ts.Venue.Capacity
+                },
+                TheatreShowDates = ts.theatreShowDates.Select(d => new {
+                    d.TheatreShowDateId,
+                    d.DateAndTime,
+                    Reservations = d.Reservations.Select(r => new {
+                        r.ReservationId,
+                        r.AmountOfTickets,
+                        r.Used,
+                        Customer = new {
+                            r.Customer.CustomerId,
+                            r.Customer.FirstName,
+                            r.Customer.LastName,
+                            r.Customer.Email
+                        }
+                    }).ToList()
+                }).ToList()
+            }).FirstOrDefaultAsync();
     }
 
 
-    public async Task<List<TheatreShow>> GetAll()
+    public async Task<List<TheatreShowDto>> GetAll()
     {
-        var theatreShows = await _context.TheatreShow.ToListAsync();
-        if (theatreShows == null)
-        {
-            return new List<TheatreShow>(){};
-        }
-        return theatreShows;
+        return await _context.TheatreShow
+            .Select(ts => new TheatreShowDto {
+                TheatreShowId = ts.TheatreShowId,
+                Title = ts.Title,
+                Description = ts.Description,
+                Price = ts.Price,
+                Venue = new VenueDto {
+                    VenueId = ts.Venue.VenueId,
+                    Name = ts.Venue.Name,
+                    Capacity = ts.Venue.Capacity
+                },
+                TheatreShowDates = ts.theatreShowDates.Select(d => new TheatreShowDateDto {
+                    TheatreShowDateId = d.TheatreShowDateId,
+                    DateAndTime = d.DateAndTime,
+                    Reservations = d.Reservations.Select(r => new ReservationDto {
+                        ReservationId = r.ReservationId,
+                        AmountOfTickets = r.AmountOfTickets,
+                        Used = r.Used,
+                        Customer = new CustomerDto {
+                            CustomerId = r.Customer.CustomerId,
+                            FirstName = r.Customer.FirstName,
+                            LastName = r.Customer.LastName,
+                            Email = r.Customer.Email
+                        }
+                    }).ToList()
+                }).ToList()
+            }).ToListAsync();
     }
 
     public async Task<bool> Update(TheatreShow theatreShow)
@@ -113,4 +156,44 @@ public class TheatreService : ITheatreService
         await _context.SaveChangesAsync();
         return true;
     }
+}
+
+public class TheatreShowDto
+{
+    public int TheatreShowId { get; set; }
+    public string Title { get; set; }
+    public string Description { get; set; }
+    public double Price { get; set; }
+    public VenueDto Venue { get; set; }
+    public List<TheatreShowDateDto> TheatreShowDates { get; set; }
+}
+
+public class VenueDto
+{
+    public int VenueId { get; set; }
+    public string Name { get; set; }
+    public int Capacity { get; set; }
+}
+
+public class TheatreShowDateDto
+{
+    public int TheatreShowDateId { get; set; }
+    public DateTime DateAndTime { get; set; }
+    public List<ReservationDto> Reservations { get; set; }
+}
+
+public class ReservationDto
+{
+    public int ReservationId { get; set; }
+    public int AmountOfTickets { get; set; }
+    public bool Used { get; set; }
+    public CustomerDto Customer { get; set; }
+}
+
+public class CustomerDto
+{
+    public int CustomerId { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string Email { get; set; }
 }
