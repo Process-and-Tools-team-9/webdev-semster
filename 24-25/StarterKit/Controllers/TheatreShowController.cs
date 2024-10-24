@@ -67,16 +67,68 @@ public class TheatreController : Controller{
 
 
     [HttpGet]
-    public async Task<IActionResult> GetAllTheatres()
+    public async Task<IActionResult> GetAllTheatres(
+        [FromQuery] string? sortBy = "Title", 
+        [FromQuery] string? sortOrder = "asc", 
+        [FromQuery] string? venueName = null, 
+        [FromQuery] string? fromDate = null, 
+        [FromQuery] string? toDate = null,
+        [FromQuery] string? titleFilter = null,
+        [FromQuery] string? descriptionFilter = null)
     {
         try
         {
-            var Theatres = await _theatreService.GetAll();
-            if(Theatres == null)
+            var theatres = await _theatreService.GetAll();
+
+            if (theatres == null || !theatres.Any())
             {
                 return NotFound("No Theatres exist.");
             }
-            return Ok(Theatres);
+
+            if (!string.IsNullOrEmpty(venueName))
+            {
+                theatres = theatres.Where(t => t.Venue.Name.Contains(venueName, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+
+            if (DateTime.TryParse(fromDate, out DateTime startDate))
+            {
+                theatres = theatres.Where(t => t.TheatreShowDates.Any(d => d.DateAndTime >= startDate)).ToList();
+            }
+
+            if (DateTime.TryParse(toDate, out DateTime endDate))
+            {
+                theatres = theatres.Where(t => t.TheatreShowDates.Any(d => d.DateAndTime <= endDate)).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(titleFilter))
+            {
+                theatres = theatres.Where(t => t.Title.Contains(titleFilter, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(descriptionFilter))
+            {
+                theatres = theatres.Where(t => t.Description.Contains(descriptionFilter, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+
+            IOrderedEnumerable<TheatreShowDto> sortedTheatres;
+
+            switch (sortBy.ToLower())
+            {
+                case "title":
+                    sortedTheatres = sortOrder.ToLower() == "desc" ? theatres.OrderByDescending(t => t.Title) : theatres.OrderBy(t => t.Title);
+                    break;
+                case "price":
+                    sortedTheatres = sortOrder.ToLower() == "desc" ? theatres.OrderByDescending(t => t.Price) : theatres.OrderBy(t => t.Price);
+                    break;
+                case "date":
+                    sortedTheatres = sortOrder.ToLower() == "desc" ? theatres.OrderByDescending(t => t.TheatreShowDates.FirstOrDefault()?.DateAndTime) : theatres.OrderBy(t => t.TheatreShowDates.FirstOrDefault()?.DateAndTime);
+                    break;
+                default:
+                    sortedTheatres = theatres.OrderBy(t => t.Title);
+                    break;
+            }
+
+            return Ok(sortedTheatres.ToList());
         }
         catch (Exception ex)
         {
