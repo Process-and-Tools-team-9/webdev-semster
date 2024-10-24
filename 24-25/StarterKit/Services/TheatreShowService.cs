@@ -51,7 +51,7 @@ public class TheatreService : ITheatreService
         newTheatreShow.Description = theatreShowBody.Description;
         newTheatreShow.theatreShowDates = ToBetheatreShowDates;
         newTheatreShow.Venue = venueToAdd;
-        newTheatreShow.Price = 0;
+        newTheatreShow.Price = 1;
         newTheatreShow.Venue.TheatreShows.Add(newTheatreShow);
 
         try
@@ -82,19 +82,7 @@ public class TheatreService : ITheatreService
                 },
                 TheatreShowDates = ts.theatreShowDates.Select(d => new {
                     d.TheatreShowDateId,
-                    d.DateAndTime,
-                    Reservations = d.Reservations.Select(r => new {
-                        r.ReservationId,
-                        r.AmountOfTickets,
-                        r.Used,
-                        Customer = new {
-                            r.Customer.CustomerId,
-                            r.Customer.FirstName,
-                            r.Customer.LastName,
-                            r.Customer.Email
-                        }
-                    }).ToList()
-                }).ToList()
+                    d.DateAndTime}).ToList()
             }).FirstOrDefaultAsync();
     }
 
@@ -114,20 +102,10 @@ public class TheatreService : ITheatreService
                 },
                 TheatreShowDates = ts.theatreShowDates.Select(d => new TheatreShowDateDto {
                     TheatreShowDateId = d.TheatreShowDateId,
-                    DateAndTime = d.DateAndTime,
-                    Reservations = d.Reservations.Select(r => new ReservationDto {
-                        ReservationId = r.ReservationId,
-                        AmountOfTickets = r.AmountOfTickets,
-                        Used = r.Used,
-                        Customer = new CustomerDto {
-                            CustomerId = r.Customer.CustomerId,
-                            FirstName = r.Customer.FirstName,
-                            LastName = r.Customer.LastName,
-                            Email = r.Customer.Email
-                        }
-                    }).ToList()
-                }).ToList()
-            }).ToListAsync();
+                    DateAndTime = d.DateAndTime
+                }).ToList() // Ensure to call ToList() here
+            })
+            .ToListAsync();
     }
 
     public async Task<bool> Update(TheatreShow theatreShow)

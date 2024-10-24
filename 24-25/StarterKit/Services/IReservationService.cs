@@ -4,9 +4,9 @@ using StarterKit.Controllers;
 namespace StarterKit.Services;
 
 public interface IReservationService{
-    Task<bool> AddReservationAsync(ReservationBody reservationBody);
-    Task<Reservation> GetReservationAsync(int id);
-    Task<bool> UpdateReservationAsync(ReservationBody reservationBody);
-    Task<bool> DeleteReservationAsync(int id);
-    Task<List<Reservation>> GetAllReservationsAsync();
+    Task<double> Add(ReservationBody reservationBody);
+    Task<Reservation> GetById(int id);
+    Task<bool> Update(Reservation reservation);
+    Task<bool> Delete(int id);
+    Task<List<Reservation>> GetAll();
 }

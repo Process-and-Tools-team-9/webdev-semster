@@ -62,7 +62,7 @@ GET http://localhost:5097/api/v1/TheatreShow/1 HTTP/1.1
 GET http://localhost:5097/api/v1/TheatreShow/1 HTTP/1.1
 
 ### Get All Theatre Shows
-GET http://localhost:5097/api/v1/TheatreShow HTTP/1.1
+GET http://localhost:5097/api/v1/ HTTP/1.1
 
 ### Update Theatre Show
 PUT http://localhost:5097/api/v1/TheatreShow HTTP/1.1

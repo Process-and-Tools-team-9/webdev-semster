@@ -18,64 +18,72 @@ public class ReservationController : Controller
     }
 
 
-    [HttpPost("AddReservation")]
+    [HttpPost]
     public async Task<IActionResult> CreateReservation([FromBody] ReservationBody reservationBody)
     {
         if (reservationBody == null || 
-            reservationBody.AmountOfTickets <= 0 || 
-            reservationBody.CustomerId <= 0 || 
-            reservationBody.TheatreShowDateId <= 0)
+            string.IsNullOrEmpty(reservationBody.FirstName) || 
+            string.IsNullOrEmpty(reservationBody.LastName) || 
+            string.IsNullOrEmpty(reservationBody.Email))
         {
-            return BadRequest("AmountOfTickets, CustomerId, and TheatreShowDateId are required and must be greater than zero.");
+            return BadRequest("First name, last name, email, and reservation details are required.");
         }
-        if(!await _reservationService.AddReservationAsync(reservationBody))
+
+        if (reservationBody.amountOfTickets <= 0)
         {
-            return BadRequest("Error adding reservation.");
+            return BadRequest("Amount of tickets must be greater than zero.");
         }
-        return Ok("Reservation added successfully.");
+
+        try
+        {
+            double result = await _reservationService.Add(reservationBody);
+
+            if (result == -1)
+            {
+                return BadRequest("One or more Theatre show date IDs are invalid.");
+            }
+            if (result == -2)
+            {
+                return BadRequest("Not enough capacity for one or more selected shows.");
+            }
+            if (result == -3)
+            {
+                return BadRequest("One or more selected shows have already finished.");
+            }
+
+            return Ok(new { totalPrice = result });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, "An error occurred while creating the reservation: " + ex.Message);
+        }
     }
 
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetReservation(int id)
     {
-        if (id <= 0)
-        {
-            return BadRequest("Reservation ID is required and must be greater than zero.");
-        }
-        var reservation = await _reservationService.GetReservationAsync(id);
-        if (reservation == null)
-        {
-            return NotFound("No reservation with the specified ID exists.");
-        }
-        return Ok(reservation);
+        return BadRequest("Not Implemented");
     }
 
 
     [HttpGet]
     public async Task<IActionResult> GetAllReservations()
     {
-        var reservations = await _reservationService.GetAllReservationsAsync();
-        if (reservations == null)
-        {
-            return NotFound("No reservations found.");
-        }
-        return Ok(reservations);
+        return BadRequest("Not Implemented");
     }
 
 
     [HttpPut]
-    public async Task<IActionResult> UpdateReservation([FromBody] ReservationBody reservationBody)
+    public async Task<IActionResult> UpdateReservation([FromBody] Reservation reservation)
     {
-        if (reservationBody.ReservationId == 0 || reservationBody.AmountOfTickets <= 0 || 
-            reservationBody.CustomerId <= 0 || reservationBody.TheatreShowDateId <= 0)
+        if (reservation == null || reservation.ReservationId <= 0)
         {
-            return BadRequest("ReservationId, AmountOfTickets, CustomerId, and TheatreShowDateId are required and must be greater than zero.");
+            return BadRequest("Reservation ID is required and must be greater than zero.");
         }
-
-        if(!await _reservationService.UpdateReservationAsync(reservationBody))
+        if(!await _reservationService.Update(reservation))
         {
-            return NotFound("No reservation with the specified ID exists.");
+            return BadRequest("Error updating reservation.");
         }
         return Ok("Reservation updated successfully.");
     }
@@ -88,7 +96,7 @@ public class ReservationController : Controller
         {
             return BadRequest("Reservation ID is required and must be greater than zero.");
         }
-        if(!await _reservationService.DeleteReservationAsync(id))
+        if(!await _reservationService.Delete(id))
         {
             return NotFound("No reservation with the specified ID exists.");
         }
@@ -99,12 +107,9 @@ public class ReservationController : Controller
 
 public class ReservationBody
 {
-    public int ReservationId { get; set; }
-
-    public int AmountOfTickets { get; set; }
-
-    public bool Used { get; set; }
-
-    public int CustomerId { get; set; }
-    public int TheatreShowDateId { get; set; }
+    public string? FirstName { get; set; }
+    public string? LastName { get; set; }
+    public string? Email { get; set; }
+    public int amountOfTickets { get; set; }
+    public List<int> TheatreShowDateIds { get; set; }
 }                                                                                                          
