@@ -1,21 +1,23 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 function LoginPage({ onLogin }) {
-  const [firstname, setFirstname] = useState('');
-  const [lastname, setLastname] = useState('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState(''); // 1) State to store errors
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (firstname && lastname) {
+
+    setErrorMessage(''); // Clear any previous errors
+
+    if (username && password) {
       try {
         const response = await fetch('http://localhost:5025/api/users/login', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ firstname, lastname }),
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password }),
         });
 
         if (response.ok) {
@@ -24,44 +26,64 @@ function LoginPage({ onLogin }) {
           onLogin(data.user); // Use the user object from the backend response
           navigate('/home');
         } else {
-          alert('Error logging in. Please try again.');
+          // 2) Handle non-OK responses (e.g., 401 Unauthorized)
+          // Try to get error text from server; otherwise use default
+          let errorText = 'Incorrect username or password.';
+          try {
+            // Attempt to parse the error body (if the server sends a message)
+            errorText = await response.text();
+          } catch (err) {
+            console.error('Error parsing error response:', err);
+          }
+          setErrorMessage(errorText);
         }
       } catch (error) {
         console.error('Error:', error);
-        alert('Error connecting to the server.');
+        setErrorMessage('Error connecting to the server.');
       }
     } else {
-      alert('Please enter both first and last names');
+      setErrorMessage('Please enter both username and password');
     }
   };
-  
-    return (
-      <div>
-        <h2>Login</h2>
-        <form onSubmit={handleSubmit}>
-          <div>
-            <label htmlFor="firtname">Firtname:</label>
-            <input
-              type="text"
-              id="firstname"
-              value={firstname}
-              onChange={(e) => setFirstname(e.target.value)}
-              required
-            />
-          </div>
-          <div>
-            <label htmlFor="lastname">Lastname:</label>
-            <input
-              type="text"
-              id="lastname"
-              value={lastname}
-              onChange={(e) => setLastname(e.target.value)}
-              required
-            />
-          </div>
-          <button type="submit">Submit</button>
-        </form>
-      </div>
-    );
-  }
+
+  return (
+    <div>
+      <h2>Login</h2>
+
+      {/* 3) Show error message if it exists */}
+      {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
+
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label htmlFor="username">Username:</label>
+          <input
+            type="text"
+            id="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+          />
+        </div>
+
+        <div>
+          <label htmlFor="password">Password:</label>
+          <input
+            type="password"
+            id="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </div>
+
+        <button type="submit">Login</button>
+      </form>
+
+      <p>
+        <Link to="register" className="custom-link">Register here</Link>
+      </p>
+    </div>
+  );
+}
+
 export default LoginPage;

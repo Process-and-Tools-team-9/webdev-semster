@@ -20,34 +20,40 @@ namespace LoginAPI.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] User loginRequest)
         {
-            if (string.IsNullOrEmpty(loginRequest.Firstname) || string.IsNullOrEmpty(loginRequest.Lastname))
+            // Basic validation
+            if (string.IsNullOrEmpty(loginRequest.Username) ||
+                string.IsNullOrEmpty(loginRequest.Password))
             {
-                return BadRequest("Firstname and Lastname are required.");
+                return BadRequest("Username and Password are required.");
             }
 
+            // Look for matching user in DB
             var user = await _context.Users
-                .FirstOrDefaultAsync(u => u.Firstname == loginRequest.Firstname && u.Lastname == loginRequest.Lastname);
+                .FirstOrDefaultAsync(u => u.Username == loginRequest.Username 
+                                       && u.Password == loginRequest.Password);
 
-            if (user != null)
+            if (user == null)
             {
-                // User exists; increment login count
-                user.LoginCount += 1;
-                await _context.SaveChangesAsync();
-                return Ok(new { message = "Login count incremented", user });
+                // Invalid credentials
+                return Unauthorized("Invalid username or password.");
             }
-            else
-            {
-                // User does not exist; create a new user
-                var newUser = new User
+
+            // Valid user found; increment login count
+            user.LoginCount++;
+            await _context.SaveChangesAsync();
+
+            // Return a safe subset of user info (exclude password)
+            return Ok(new 
+            { 
+                message = "Login successful.", 
+                user = new 
                 {
-                    Firstname = loginRequest.Firstname,
-                    Lastname = loginRequest.Lastname,
-                    LoginCount = 1
-                };
-                _context.Users.Add(newUser);
-                await _context.SaveChangesAsync();
-                return Ok(new { message = "New user created", user = newUser });
-            }
+                    user.Id,
+                    user.Username,
+                    user.LoginCount,
+                    user.Role
+                }
+            });
         }
     }
 }

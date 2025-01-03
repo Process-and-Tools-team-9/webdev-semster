@@ -6,7 +6,9 @@ import LoginPage from './Pages/LoginPage';
 import HomePage from './Pages/HomePage';  // Import your Home page component
 import ShowsPage from './Pages/ShowsPage'; // Import your Shows page component
 import AddShowPage from './Pages/AddShowPage';
+import RegisterPage from './Pages/RegisterPage';
 import backgroundImage from './Assets/Background.jpeg';
+import PrivateRoute from './PrivateRoute';
 
 function App() {
   const [user, setUser] = useState(null); // State to track the logged-in user
@@ -42,10 +44,21 @@ function App() {
 
             // Define routes for the application
             <Routes>
+              {/* Unprotected routes */}
               <Route path="/home" element={<HomePage user={user} onLogout={handleLogout}/>} />
               <Route path="/login" element={<LoginPage user={user} />} />
+              <Route path="/register" element={<RegisterPage user={user} />} />
               <Route path="/shows" element={<ShowsPage user={user} />} />
-              <Route path="/addshow" element={<AddShowPage user={user} />} />
+
+              {/* Protected route for admin only */}
+              <Route
+                path="/addshow"
+                element={
+                  <PrivateRoute user={user} requiredRole="admin">
+                    <AddShowPage user={user} />
+                  </PrivateRoute>
+                }
+              />
 
             </Routes>
           )}

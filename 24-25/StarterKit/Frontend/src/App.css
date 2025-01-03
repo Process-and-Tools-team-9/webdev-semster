@@ -39,6 +39,19 @@
   color: #61dafb;
 }
 
+.custom-link {
+  color: rgb(13, 0, 255); /* unvisited link color */
+}
+.custom-link:visited {
+  color: rgb(128, 138, 132); /* visited link color */
+}
+.custom-link:hover {
+  color: rgb(27, 177, 203); /* hover color (optional) */
+}
+.custom-link:active {
+  color: rgb(39, 182, 26); /* active click color (optional) */
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
