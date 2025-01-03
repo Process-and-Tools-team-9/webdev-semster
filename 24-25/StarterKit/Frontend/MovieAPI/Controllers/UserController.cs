@@ -55,5 +55,51 @@ namespace LoginAPI.Controllers
                 }
             });
         }
+
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] User registerRequest)
+        {
+            // 1) Basic validation
+            if (string.IsNullOrEmpty(registerRequest.Username) ||
+                string.IsNullOrEmpty(registerRequest.Password) ||
+                string.IsNullOrEmpty(registerRequest.Email))
+            {
+                return BadRequest("Username, password and email are required.");
+            }
+
+            // 2) Check if username already exists
+            var existingUser = await _context.Users
+                .FirstOrDefaultAsync(u => u.Username == registerRequest.Username);
+
+            if (existingUser != null)
+            {
+                return Conflict("Username already exists.");
+            }
+
+            // 3) Create and save new user
+            // For real apps: hash the password before saving to DB!
+            var newUser = new User
+            {
+                Username = registerRequest.Username,
+                Password = registerRequest.Password, // Plain-text here; not safe for production
+                Email = registerRequest.Email,
+                Role = "user",       // default role
+                LoginCount = 0
+            };
+
+            _context.Users.Add(newUser);
+            await _context.SaveChangesAsync();
+
+            // 4) Return minimal user info (excluding raw password)
+            return Ok(new
+            {
+                message = "User created successfully.",
+                user = new
+                {
+                    newUser.Email,
+                    newUser.Username
+                }
+            });
+        }
     }
 }

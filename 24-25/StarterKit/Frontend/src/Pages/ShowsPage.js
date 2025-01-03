@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 const ShowPage = () => {
   const [movies, setMovies] = useState([]);
@@ -32,8 +33,8 @@ const ShowPage = () => {
   return (
     <div>
       <h1>Select a Movie</h1>
-      <p><a href="home" className="custom-link">Go to home page</a></p>
-      <p><a href="addshow" className="custom-link">Go to addShow page</a></p>
+      <p><Link to="/home">Go back to home</Link></p>
+      <p><Link to="/addshow">Add a Show</Link></p>
       
       {/* Dropdown for movie selection */}
       <select value={selectedMovie?.id || ''} onChange={handleMovieSelect}>

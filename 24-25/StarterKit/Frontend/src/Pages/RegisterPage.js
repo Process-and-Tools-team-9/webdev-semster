@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 function RegisterPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
   const navigate = useNavigate();
 
   const handleRegister = async (e) => {
@@ -14,7 +15,7 @@ function RegisterPage() {
         const response = await fetch('http://localhost:5025/api/users/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, password }),
+          body: JSON.stringify({ username, password, email }),
         });
 
         if (response.ok) {
@@ -37,6 +38,17 @@ function RegisterPage() {
       <h2>Create an Account</h2>
 
       <form onSubmit={handleRegister}>
+      <div>
+          <label htmlFor="email">Email:</label>
+          <input
+            type="text"
+            id="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </div>
+
         <div>
           <label htmlFor="username">Username:</label>
           <input

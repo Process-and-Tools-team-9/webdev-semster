@@ -1,10 +1,11 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 function HomePage({ user, onLogout }) {
   return (
     <div>
       <h1>Welcome, {user.Username}!</h1>
-      <a href="shows" className="custom-link">Go to shows page</a>
+      <Link to="/shows">View Shows</Link>
       <button onClick={onLogout}>Logout</button> {/* Logout button */}
     </div>
   );

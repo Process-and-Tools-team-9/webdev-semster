@@ -9,6 +9,7 @@ import AddShowPage from './Pages/AddShowPage';
 import RegisterPage from './Pages/RegisterPage';
 import backgroundImage from './Assets/Background.jpeg';
 import PrivateRoute from './PrivateRoute';
+import { Navigate } from 'react-router-dom';
 
 function App() {
   const [user, setUser] = useState(null); // State to track the logged-in user
@@ -39,15 +40,18 @@ function App() {
         <header className="App-header">
           {/* If user is not logged in, show login page */}
           {user === null ? (
-            <LoginPage onLogin={handleLogin} />
+            <Routes>
+              <Route path="/" element={<Navigate to="/login" />} />
+              <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
+              <Route path="/register" element={<RegisterPage/>} />
+              <Route path="*" element={<Navigate to="/login" />} />
+            </Routes>
           ) : (
 
             // Define routes for the application
             <Routes>
               {/* Unprotected routes */}
               <Route path="/home" element={<HomePage user={user} onLogout={handleLogout}/>} />
-              <Route path="/login" element={<LoginPage user={user} />} />
-              <Route path="/register" element={<RegisterPage user={user} />} />
               <Route path="/shows" element={<ShowsPage user={user} />} />
 
               {/* Protected route for admin only */}

@@ -80,7 +80,7 @@ function LoginPage({ onLogin }) {
       </form>
 
       <p>
-        <Link to="register" className="custom-link">Register here</Link>
+        <Link to="/register" className="custom-link">Register here</Link>
       </p>
     </div>
   );
