@@ -5,7 +5,7 @@ function HomePage({ user, onLogout }) {
   return (
     <div>
       <h1>Welcome, {user.Username}!</h1>
-      <Link to="/shows">View Shows</Link>
+      <Link to="/shows" className="custom-link">View Shows</Link>
       <button onClick={onLogout}>Logout</button> {/* Logout button */}
     </div>
   );

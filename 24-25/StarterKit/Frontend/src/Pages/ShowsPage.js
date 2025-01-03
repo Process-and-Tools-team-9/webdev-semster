@@ -33,8 +33,8 @@ const ShowPage = () => {
   return (
     <div>
       <h1>Select a Movie</h1>
-      <p><Link to="/home">Go back to home</Link></p>
-      <p><Link to="/addshow">Add a Show</Link></p>
+      <p><Link to="/home" className="custom-link">Go back to home</Link></p>
+      <p><Link to="/addshow" className="custom-link">Add a Show</Link></p>
       
       {/* Dropdown for movie selection */}
       <select value={selectedMovie?.id || ''} onChange={handleMovieSelect}>
