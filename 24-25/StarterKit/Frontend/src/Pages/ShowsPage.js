@@ -6,6 +6,7 @@ const ShowPage = () => {
 
   // Fetch movies from the ASP.NET Core API
   useEffect(() => {
+    console.log("call use effect load movies")
     fetch('http://localhost:5025/api/Movies')
       .then((response) => {
         if (!response.ok) {
@@ -32,6 +33,7 @@ const ShowPage = () => {
     <div>
       <h1>Select a Movie</h1>
       <p><a href="home">Go to home page</a></p>
+      <p><a href="addshow">Go to addShow page</a></p>
       
       {/* Dropdown for movie selection */}
       <select value={selectedMovie?.id || ''} onChange={handleMovieSelect}>

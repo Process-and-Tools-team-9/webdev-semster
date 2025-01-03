@@ -84,6 +84,7 @@ public class TheatreService : ITheatreService
                     d.TheatreShowDateId,
                     d.DateAndTime}).ToList()
             }).FirstOrDefaultAsync();
+        
     }
 
 

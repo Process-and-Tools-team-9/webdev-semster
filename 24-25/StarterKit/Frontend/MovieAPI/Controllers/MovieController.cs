@@ -39,5 +39,22 @@ namespace MovieAPI.Controllers
 
             return movie;
         }
+
+        // POST: api/Movies
+        [HttpPost]
+        public IActionResult CreateMovie([FromBody] Movie newMovie)
+        {
+            if (newMovie == null)
+            {
+                return BadRequest("Movie data is required.");
+            }
+
+            _context.Movies.Add(newMovie);
+            _context.SaveChanges();
+
+            return CreatedAtAction(nameof(GetMovie),
+                                   new { id = newMovie.Id },
+                                   newMovie);
+        }
     }
 }

@@ -5,6 +5,7 @@ import MyButton from './Button';
 import LoginPage from './Pages/LoginPage';
 import HomePage from './Pages/HomePage';  // Import your Home page component
 import ShowsPage from './Pages/ShowsPage'; // Import your Shows page component
+import AddShowPage from './Pages/AddShowPage';
 import backgroundImage from './Assets/Background.jpeg';
 
 function App() {
@@ -44,6 +45,8 @@ function App() {
               <Route path="/home" element={<HomePage user={user} onLogout={handleLogout}/>} />
               <Route path="/login" element={<LoginPage user={user} />} />
               <Route path="/shows" element={<ShowsPage user={user} />} />
+              <Route path="/addshow" element={<AddShowPage user={user} />} />
+
             </Routes>
           )}
         </header>

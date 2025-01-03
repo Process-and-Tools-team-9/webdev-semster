@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\joeyz\\Documents\\GitHub\\Frontend-tryout\\MovieAPI\\MovieAPI.csproj": {}
+    "C:\\Users\\joeyz\\Documents\\GitHub\\webdev-semster\\24-25\\StarterKit\\Frontend\\MovieAPI\\MovieAPI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\joeyz\\Documents\\GitHub\\Frontend-tryout\\MovieAPI\\MovieAPI.csproj": {
+    "C:\\Users\\joeyz\\Documents\\GitHub\\webdev-semster\\24-25\\StarterKit\\Frontend\\MovieAPI\\MovieAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\joeyz\\Documents\\GitHub\\Frontend-tryout\\MovieAPI\\MovieAPI.csproj",
+        "projectUniqueName": "C:\\Users\\joeyz\\Documents\\GitHub\\webdev-semster\\24-25\\StarterKit\\Frontend\\MovieAPI\\MovieAPI.csproj",
         "projectName": "MovieAPI",
-        "projectPath": "C:\\Users\\joeyz\\Documents\\GitHub\\Frontend-tryout\\MovieAPI\\MovieAPI.csproj",
+        "projectPath": "C:\\Users\\joeyz\\Documents\\GitHub\\webdev-semster\\24-25\\StarterKit\\Frontend\\MovieAPI\\MovieAPI.csproj",
         "packagesPath": "C:\\Users\\joeyz\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\joeyz\\Documents\\GitHub\\Frontend-tryout\\MovieAPI\\obj\\",
+        "outputPath": "C:\\Users\\joeyz\\Documents\\GitHub\\webdev-semster\\24-25\\StarterKit\\Frontend\\MovieAPI\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\joeyz\\AppData\\Roaming\\NuGet\\NuGet.Config",
